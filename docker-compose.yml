@@ -1,0 +1,38 @@
+version: '3'
+services:
+  web:
+    build: environment/web/.
+    ports:
+      - "80:80"
+    volumes:
+     - .:/code:delegated
+    networks:
+      - techtest-net
+    working_dir: /code
+  db:
+    image: "mysql:5.7"
+    ports:
+      - "33061:3306"
+    environment:
+      MYSQL_DATABASE: "${DB_DATABASE:-starwars}"
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD:-starwars}"
+    volumes:
+      - mysqldata:/var/lib/mysql
+    networks:
+      - techtest-net
+  redis:
+    image: "redis:latest"
+    ports:
+      - "63791:6379"
+    volumes:
+      - redisdata:/data
+    networks:
+      - techtest-net
+networks:
+  techtest-net:
+    driver: "bridge"
+volumes:
+  mysqldata:
+    driver: "local"
+  redisdata:
+    driver: "local"
